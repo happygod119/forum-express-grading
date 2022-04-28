@@ -9,22 +9,71 @@
         <h5 class="card-title"><strong>{{ user.name }}</strong></h5>
         <p class="card-text">{{ user.email }}</p>
         <p>{{#if user.Comments.length}}{{user.Comments.length}} 已評論餐廳{{else}}尚未評論餐廳{{/if}}</p>
+        <p>{{#if user.FavoritedRestaurants.length}}{{user.FavoritedRestaurants.length}} 收藏的餐廳{{else}}尚未收藏的餐廳{{/if}}</p>
+        <p>{{#if user.Followings.length}}{{user.Followings.length}} followings (追蹤者){{else}}Unfollowings(尚未追蹤者){{/if}}
         </p>
+        <p>{{#if user.Followers.length}}{{user.Followers.length}} followers (追隨者){{else}}Unfollowers(尚未追隨者){{/if}}</p>
         <a class="btn btn-primary" href="/users/{{ user.id }}/edit" role="button">Edit</a>
       </div>
     </div>
   </div>
 </div>
-<div class="card">
-  <div class="card-header">
-    {{#if user.Comments.length}}{{user.Comments.length}} 已評論餐廳{{else}}尚未評論餐廳{{/if}}
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="card mb-3">
+      <div class="card-header">
+        {{#if user.Followings.length}}{{user.Followings.length}} followings (追蹤者){{else}}Unfollowings(尚未追蹤者){{/if}}
+      </div>
+      <div class="card-body">
+        {{#each user.Followings}}
+        <a class="text-decoration-none" href="/users/{{this.id}}">
+          <img class="img-responsive center-block m-2" src="{{this.image}}"
+            style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-header">
+        {{#if user.Followers.length}}{{user.Followers.length}} followers (追隨者){{else}}Unfollowers(尚未追隨者){{/if}}
+      </div>
+      <div class="card-body">
+        {{#each user.Followers}}
+        <a class="text-decoration-none" href="/users/{{this.id}}">
+          <img class="img-responsive center-block m-2" src="{{this.image}}"
+            style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        {{/each}}
+      </div>
+    </div>
   </div>
-  <div class="card-body">
-    {{#each user.Comments}}
-    <a class="text-decoration-none" href="/restaurants/{{this.restaurantId}}">
-      <img class="img-responsive center-block m-2" src="{{this.Restaurant.image}}"
-        style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-    </a>
-    {{/each}}
+  <div class="col-md-8">
+    <div class="card mb-3">
+      <div class="card-header">
+        {{#if user.Comments.length}}{{user.Comments.length}} 已評論餐廳{{else}}尚未評論餐廳{{/if}}
+      </div>
+      <div class="card-body">
+        {{#each user.Comments}}
+        <a class="text-decoration-none" href="/restaurants/{{this.restaurantId}}">
+          <img class="img-responsive center-block m-2" src="{{this.Restaurant.image}}"
+            style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-header">
+        {{#if user.FavoritedRestaurants.length}}{{user.FavoritedRestaurants.length}} 收藏的餐廳{{else}}尚未收藏的餐廳{{/if}}
+      </div>
+      <div class="card-body">
+        {{#each user.FavoritedRestaurants}}
+        <a class="text-decoration-none" href="/restaurants/{{this.id}}">
+          <img class="img-responsive center-block m-2" src="{{this.image}}"
+            style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        {{/each}}
+      </div>
+    </div>
   </div>
 </div>
