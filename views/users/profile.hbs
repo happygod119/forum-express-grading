@@ -8,12 +8,16 @@
       <div class="card-body">
         <h5 class="card-title"><strong>{{ user.name }}</strong></h5>
         <p class="card-text">{{ user.email }}</p>
-        <p>{{#if user.Comments.length}}{{user.Comments.length}} 已評論餐廳{{else}}尚未評論餐廳{{/if}}</p>
+        <p>{{#if comments.length}}{{comments.length}} 已評論餐廳{{else}}尚未評論餐廳{{/if}}</p>
         <p>{{#if user.FavoritedRestaurants.length}}{{user.FavoritedRestaurants.length}} 收藏的餐廳{{else}}尚未收藏的餐廳{{/if}}</p>
         <p>{{#if user.Followings.length}}{{user.Followings.length}} followings (追蹤者){{else}}Unfollowings(尚未追蹤者){{/if}}
         </p>
         <p>{{#if user.Followers.length}}{{user.Followers.length}} followers (追隨者){{else}}Unfollowers(尚未追隨者){{/if}}</p>
+        {{#if user.owner}}
         <a class="btn btn-primary" href="/users/{{ user.id }}/edit" role="button">Edit</a>
+        {{else}}
+        <a class='btn btn-outline-secondary' href='javascript:history.back()'>Back</a>
+        {{/if}}
       </div>
     </div>
   </div>
@@ -51,11 +55,11 @@
   <div class="col-md-8">
     <div class="card mb-3">
       <div class="card-header">
-        {{#if user.Comments.length}}{{user.Comments.length}} 已評論餐廳{{else}}尚未評論餐廳{{/if}}
+        {{#if comments.length}}{{comments.length}} 已評論餐廳{{else}}尚未評論餐廳{{/if}}
       </div>
       <div class="card-body">
-        {{#each user.Comments}}
-        <a class="text-decoration-none" href="/restaurants/{{this.restaurantId}}">
+        {{#each comments}}
+        <a class="text-decoration-none" href="/restaurants/{{this.Restaurant.id}}">
           <img class="img-responsive center-block m-2" src="{{this.Restaurant.image}}"
             style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
         </a>

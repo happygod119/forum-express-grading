@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
+const Sequelize = require('sequelize')
 
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -41,28 +42,32 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      include: [
-        { model: Comment, include: Restaurant },
-        { model: Restaurant, as: 'FavoritedRestaurants' },
-        { model: User, as: 'Followings' },
-        { model: User, as: 'Followers' }
-      ]
-    })
-      .then(user => {
+    const userId = getUser(req).id
+    return Promise.all([
+      User.findByPk(req.params.id, {
+        include: [
+          Comment,
+          { model: Restaurant, as: 'FavoritedRestaurants' },
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' }
+        ]
+      }),
+      Comment.findAll({
+        where: { userId: req.params.id },
+        include: [Restaurant],
+        raw: true,
+        nest: true,
+        attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurant_id')), 'unduplicatedRestId']]
+      })
+    ])
+
+      .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
-
         user = user.toJSON()
-
-        user.commentedRestaurants = user.Comments && user.Comments.reduce((acc, c) => {
-          if (!acc.some(r => r.id === c.restaurantId)) {
-            acc.push(c.Restaurant)
-          }
-          return acc
-        }, [])
-
+        user.owner = Number(req.params.id) === userId || false
         res.render('users/profile', {
-          user
+          user,
+          comments
         })
       })
       .catch(err => next(err))
