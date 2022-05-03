@@ -9,10 +9,10 @@
         <h5 class="card-title"><strong>{{ user.name }}</strong></h5>
         <p class="card-text">{{ user.email }}</p>
         <p>{{#if comments.length}}{{comments.length}} 已評論餐廳{{else}}尚未評論餐廳{{/if}}</p>
-        <p>{{#if user.FavoritedRestaurants.length}}{{user.FavoritedRestaurants.length}} 收藏的餐廳{{else}}尚未收藏的餐廳{{/if}}</p>
-        <p>{{#if user.Followings.length}}{{user.Followings.length}} followings (追蹤者){{else}}Unfollowings(尚未追蹤者){{/if}}
+        <p>{{#if user.FavoritedRestaurants.length}}{{user.FavoritedRestaurants.length}} 收藏的餐廳{{else}}尚未有收藏餐廳{{/if}}</p>
+        <p>{{#if user.Followings.length}}{{user.Followings.length}} followings (追蹤者){{else}}Unfollowings(尚未有追蹤者){{/if}}
         </p>
-        <p>{{#if user.Followers.length}}{{user.Followers.length}} followers (追隨者){{else}}Unfollowers(尚未追隨者){{/if}}</p>
+        <p>{{#if user.Followers.length}}{{user.Followers.length}} followers (追隨者){{else}}Unfollowers(尚未有追隨者){{/if}}</p>
         {{#if user.owner}}
         <a class="btn btn-primary" href="/users/{{ user.id }}/edit" role="button">Edit</a>
         {{else}}
