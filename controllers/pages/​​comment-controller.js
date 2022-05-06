@@ -1,4 +1,4 @@
-const { Comment, User, Restaurant } = require('../models')
+const { Comment, User, Restaurant } = require('../../models')
 
 const commentController = {
   postComment: (req, res, next) => {
@@ -33,10 +33,11 @@ const commentController = {
 
         return comment.destroy()
       })
-      .then(deletedComment => res.redirect(`/restaurants/${deletedComment.restaurantId}`))
+      .then(deletedComment =>
+        res.redirect(`/restaurants/${deletedComment.restaurantId}`)
+      )
       .catch(err => next(err))
   }
-
 }
 
 module.exports = commentController

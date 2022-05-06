@@ -1,5 +1,5 @@
-const { Restaurant, User, Category } = require('../models')
-const { imgurFileHandler } = require('../helpers/file-helpers')
+const { Restaurant, User, Category } = require('../../models')
+const { imgurFileHandler } = require('../../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -15,25 +15,30 @@ const adminController = {
     return Category.findAll({
       raw: true
     })
-      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .then(categories =>
+        res.render('admin/create-restaurant', { categories })
+      )
       .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req
 
     return imgurFileHandler(file)
-      .then(filePath => Restaurant.create({
-        name,
-        tel,
-        address,
-        openingHours,
-        description,
-        image: filePath || null,
-        categoryId
-      }))
+      .then(filePath =>
+        Restaurant.create({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null,
+          categoryId
+        })
+      )
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
@@ -66,7 +71,8 @@ const adminController = {
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req
@@ -129,7 +135,6 @@ const adminController = {
       })
       .catch(err => next(err))
   }
-
 }
 
 module.exports = adminController

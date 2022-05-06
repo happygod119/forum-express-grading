@@ -1,5 +1,5 @@
-const { Restaurant, Category, Comment, User } = require('../models')
-const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const { Restaurant, Category, Comment, User } = require('../../models')
+const { getOffset, getPagination } = require('../../helpers/pagination-helper')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -15,7 +15,7 @@ const restaurantController = {
       Restaurant.findAndCountAll({
         include: Category,
         where: {
-          ...categoryId ? { categoryId } : {}
+          ...(categoryId ? { categoryId } : {})
         },
         limit,
         offset,
@@ -25,8 +25,10 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
+        const favoritedRestaurantsId =
+          req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId =
+          req.user && req.user.LikedRestaurants.map(lr => lr.id)
 
         const data = restaurants.rows.map(r => ({
           ...r,
@@ -59,7 +61,9 @@ const restaurantController = {
         return restaurant.increment('viewCount')
       })
       .then(restaurant => {
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isFavorited = restaurant.FavoritedUsers.some(
+          f => f.id === req.user.id
+        )
         const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
 
         res.render('restaurant', {
@@ -112,17 +116,25 @@ const restaurantController = {
   },
   getTopRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      include: [{ model: User, as: 'FavoritedUsers' }]
+      include: [
+        {
+          model: User,
+          as: 'FavoritedUsers'
+        }
+      ]
     })
       .then(restaurants => {
-        const result = restaurants.map(restaurant => ({
-          ...restaurant.toJSON(),
-          description: restaurant.description.substring(0, 50),
-          favoritedCount: restaurant.FavoritedUsers.length,
-          isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
+        restaurants = restaurants.map(r => ({
+          ...r.dataValues,
+          description: r.dataValues.description.substring(0, 50),
+          favoritedCount: r.FavoritedUsers.length,
+          isFavorited:
+            req.user &&
+            req.user.FavoritedRestaurants.map(d => d.id).includes(r.id)
         }))
-          .sort((a, b) => b.favoritedCount - a.favoritedCount)
-        res.render('top-restaurants', { restaurants: result })
+        restaurants.sort((a, b) => b.favoritedCount - a.favoritedCount)
+        restaurants = restaurants.slice(0, 10)
+        res.render('top-restaurants', { restaurants })
       })
       .catch(err => next(err))
   }
